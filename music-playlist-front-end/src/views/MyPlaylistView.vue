@@ -19,7 +19,7 @@
       </div>
 
       <!-- Playlist Table Component -->
-      <MyPlayList :playlists="playlists" />
+      <MyPlayList :playlists="playlists" @refresh="loadPlaylists" />
     </div>
 
     <!-- Add Playlist Dialog -->
@@ -87,17 +87,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import MyPlayList from "../components/MyPlayList.vue";
-import { playlists as playlistData } from "../mock/playlistData";
+import { createPlaylist, getAllPlaylists, type Playlist } from "../services/playlistService";
 import Swal from "sweetalert2";
 
-const playlists = ref(playlistData);
+const playlists = ref<Playlist[]>([]);
 const showDialog = ref(false);
 const newPlaylist = reactive({
   name: "",
   description: "",
 });
+
+// Load playlists on component mount
+onMounted(async () => {
+  await loadPlaylists();
+});
+
+const loadPlaylists = async () => {
+  try {
+    playlists.value = await getAllPlaylists();
+  } catch (error) {
+    console.error("Error loading playlists:", error);
+    Swal.fire({
+      title: "Error!",
+      text: "Failed to load playlists",
+      icon: "error",
+      background: "#1a1a1a",
+      color: "#fff",
+      iconColor: "#ff4444",
+    });
+  }
+};
 
 const openDialog = () => {
   showDialog.value = true;
@@ -113,22 +134,43 @@ const resetForm = () => {
   newPlaylist.description = "";
 };
 
-const savePlaylist = () => {
-  // Sweet Alert success theme dark
-  Swal.fire({
-    title: "Success!",
-    text: `Playlist "${newPlaylist.name}" has been created successfully!`,
-    icon: "success",
-    background: "#1a1a1a",
-    color: "#fff",
-    iconColor: "#1DB954",
-    showConfirmButton: false,
-    timer: 2000,
-    timerProgressBar: true,
-  });
+const savePlaylist = async () => {
+  try {
+    // Create playlist via service
+    await createPlaylist({
+      name: newPlaylist.name,
+      description: newPlaylist.description,
+    });
 
-  // Close dialog and reset form
-  closeDialog();
+    // Reload playlists
+    await loadPlaylists();
+
+    // Sweet Alert success theme dark
+    Swal.fire({
+      title: "Success!",
+      text: `Playlist "${newPlaylist.name}" has been created successfully!`,
+      icon: "success",
+      background: "#1a1a1a",
+      color: "#fff",
+      iconColor: "#1DB954",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+
+    // Close dialog and reset form
+    closeDialog();
+  } catch (error) {
+    console.error("Error creating playlist:", error);
+    Swal.fire({
+      title: "Error!",
+      text: "Failed to create playlist. Please try again.",
+      icon: "error",
+      background: "#1a1a1a",
+      color: "#fff",
+      iconColor: "#ff4444",
+    });
+  }
 };
 </script>
 

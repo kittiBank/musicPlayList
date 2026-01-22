@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { Playlist } from './entities/playlist.entity';
@@ -88,10 +88,12 @@ export class PlaylistService {
     const playlist = this.playlists[playlistIndex];
     
     // ตรวจสอบว่าเพลงนี้มีอยู่ใน playlist แล้วหรือยัง
-    if (!playlist.songs.includes(songId)) {
-      playlist.songs.push(songId);
-      playlist.updatedAt = new Date();
+    if (playlist.songs.includes(songId)) {
+      throw new BadRequestException('This song is already in the playlist');
     }
+    
+    playlist.songs.push(songId);
+    playlist.updatedAt = new Date();
 
     return playlist;
   }
