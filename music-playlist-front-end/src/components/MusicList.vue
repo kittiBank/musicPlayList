@@ -29,12 +29,12 @@
             <tr
               v-for="music in paginatedMusics"
               :key="music.id"
-              class="border-b border-gray-700 hover:bg-gray-800 hover:bg-opacity-30 transition-colors"
+              class="border-b border-gray-700 hover:bg-[#282828] hover:bg-opacity-50 transition-colors"
             >
               <!-- Image -->
               <td class="py-2 px-4">
                 <div
-                  class="w-11 h-11 bg-gradient-to-br from-[#64b5f6] to-[#2196f3] rounded-md flex items-center justify-center"
+                  class="w-11 h-11 bg-gradient-to-br from-[#1DB954] to-[#169c46] rounded-md flex items-center justify-center"
                 >
                   <svg
                     class="w-6 h-6 text-white"
@@ -61,7 +61,7 @@
                   <!-- Play Button -->
                   <button
                     @click="playMusic(music)"
-                    class="p-2 rounded-full hover:bg-gray-700 transition-colors group"
+                    class="p-2 rounded-full hover:bg-[#1DB954] transition-colors group"
                     title="Play"
                   >
                     <svg
@@ -74,25 +74,57 @@
                   </button>
 
                   <!-- Add to Playlist Button -->
-                  <button
-                    @click="addToPlaylist(music)"
-                    class="p-2 rounded-full hover:bg-gray-700 transition-colors group"
-                    title="Add to Playlist"
-                  >
-                    <svg
-                      class="w-5 h-5 text-gray-300 group-hover:text-white transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  <div class="relative">
+                    <button
+                      @click="togglePlaylistDialog(music)"
+                      class="p-2 rounded-full hover:bg-[#1DB954] transition-colors group"
+                      title="Add to Playlist"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 4v16m8-8H4"
-                      ></path>
-                    </svg>
-                  </button>
+                      <svg
+                        class="w-5 h-5 text-gray-300 group-hover:text-white transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 4v16m8-8H4"
+                        ></path>
+                      </svg>
+                    </button>
+
+                    <!-- Playlist Dialog -->
+                    <div
+                      v-if="showDialog && selectedMusic?.id === music.id"
+                      class="absolute z-50 bg-[#282828] rounded-lg shadow-2xl border border-gray-700 min-w-[200px]"
+                      :style="dialogStyle"
+                    >
+                      <div class="p-2">
+                        <div class="text-xs text-gray-400 px-3 py-2 font-semibold">
+                          Add to Playlist
+                        </div>
+                        <button
+                          v-for="playlist in playlists"
+                          :key="playlist.id"
+                          @click="addMusicToPlaylist(music, playlist)"
+                          class="w-full text-left px-3 py-2 rounded hover:bg-[#3e3e3e] transition-colors text-white text-sm flex items-center gap-2"
+                        >
+                          <svg
+                            class="w-4 h-4 text-[#1DB954]"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"
+                            ></path>
+                          </svg>
+                          {{ playlist.name }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -105,7 +137,7 @@
         <button
           @click="prevPage"
           :disabled="currentPage === 1"
-          class="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+          class="px-3 py-1.5 rounded-lg bg-[#282828] text-white hover:bg-[#3e3e3e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
         >
           Previous
         </button>
@@ -116,10 +148,8 @@
             :key="page"
             @click="currentPage = page"
             :class="[
-              'px-2 py-1.5 rounded-lg transition-colors text-sm',
-              currentPage === page
-                ? 'bg-gradient-to-r from-[#64b5f6] to-[#2196f3] text-white font-semibold'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700',
+              'px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold min-w-[2.5rem]',
+              currentPage === page ? 'active-page' : 'inactive-page',
             ]"
           >
             {{ page }}
@@ -129,7 +159,7 @@
         <button
           @click="nextPage"
           :disabled="currentPage === totalPages"
-          class="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+          class="px-3 py-1.5 rounded-lg bg-[#282828] text-white hover:bg-[#3e3e3e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
         >
           Next
         </button>
@@ -147,13 +177,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
-interface Music {
-  id: number;
-  title: string;
-  artist: string;
-  album: string;
-}
+import Swal from "sweetalert2";
+//Mock data
+import { musics, type Music } from "../mock/musicData";
+import { playlists, type Playlist } from "../mock/playlistData";
 
 export default defineComponent({
   name: "MusicList",
@@ -161,118 +188,11 @@ export default defineComponent({
     return {
       currentPage: 1,
       itemsPerPage: 5,
-      musics: [
-        {
-          id: 1,
-          title: "Blinding Lights",
-          artist: "The Weeknd",
-          album: "After Hours",
-        },
-        {
-          id: 2,
-          title: "Shape of You",
-          artist: "Ed Sheeran",
-          album: "÷ (Divide)",
-        },
-        {
-          id: 3,
-          title: "Someone You Loved",
-          artist: "Lewis Capaldi",
-          album: "Divinely Uninspired to a Hellish Extent",
-        },
-        { id: 4, title: "Sunroof", artist: "Nicky Youre", album: "Sunroof" },
-        {
-          id: 5,
-          title: "As It Was",
-          artist: "Harry Styles",
-          album: "Harry's House",
-        },
-        {
-          id: 6,
-          title: "Flowers",
-          artist: "Miley Cyrus",
-          album: "Endless Summer Vacation",
-        },
-        {
-          id: 7,
-          title: "Anti-Hero",
-          artist: "Taylor Swift",
-          album: "Midnights",
-        },
-        {
-          id: 8,
-          title: "Calm Down",
-          artist: "Rema & Selena Gomez",
-          album: "Rema",
-        },
-        {
-          id: 9,
-          title: "Good as Hell",
-          artist: "Lizzo",
-          album: "Cuz I Love You",
-        },
-        {
-          id: 10,
-          title: "Levitating",
-          artist: "Dua Lipa",
-          album: "Future Nostalgia",
-        },
-        {
-          id: 11,
-          title: "Peaches",
-          artist: "Justin Bieber ft. Daniel Caesar & Giveon",
-          album: "Justice",
-        },
-        {
-          id: 12,
-          title: "Watermelon Sugar",
-          artist: "Harry Styles",
-          album: "Fine Line",
-        },
-        {
-          id: 13,
-          title: "Industry Baby",
-          artist: "Lil Nas X & Jack Harlow",
-          album: "Montero",
-        },
-        {
-          id: 14,
-          title: "Break My Soul",
-          artist: "Beyoncé",
-          album: "Renaissance",
-        },
-        {
-          id: 15,
-          title: "Heat Waves",
-          artist: "Glass Animals",
-          album: "Dreamland",
-        },
-        {
-          id: 16,
-          title: "Unholy",
-          artist: "Sam Smith & Kim Petras",
-          album: "Love Goes",
-        },
-        {
-          id: 17,
-          title: "About You",
-          artist: "The 1975",
-          album: "I Like America & America Likes Me",
-        },
-        {
-          id: 18,
-          title: "Moonlight",
-          artist: "Kali Uchis",
-          album: "Orquideas",
-        },
-        {
-          id: 19,
-          title: "Night Shift",
-          artist: "Lucy Spraggan",
-          album: "Night Shift",
-        },
-        { id: 20, title: "Golden", artist: "Harry Styles", album: "Fine Line" },
-      ] as Music[],
+      musics: musics,
+      playlists: playlists,
+      showDialog: false,
+      selectedMusic: null as Music | null,
+      dialogStyle: {} as any,
     };
   },
   computed: {
@@ -300,10 +220,71 @@ export default defineComponent({
       console.log("Playing:", music.title);
       // Add your play logic here
     },
-    addToPlaylist(music: Music) {
-      console.log("Adding to playlist:", music.title);
-      // Add your add to playlist logic here
+    togglePlaylistDialog(music: Music) {
+      if (this.showDialog && this.selectedMusic?.id === music.id) {
+        this.showDialog = false;
+        this.selectedMusic = null;
+      } else {
+        this.selectedMusic = music;
+        this.showDialog = true;
+
+        // Position the dialog to the left of the button
+        this.dialogStyle = {
+          right: "100%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          marginRight: "8px",
+        };
+      }
     },
+    addMusicToPlaylist(music: Music, playlist: Playlist) {
+      this.showDialog = false;
+      this.selectedMusic = null;
+
+      Swal.fire({
+        title: "Success!",
+        html: `<strong>${music.title}</strong> by ${music.artist}<br>added to <strong>${playlist.name}</strong>`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+        background: "#282828",
+        color: "#fff",
+        iconColor: "#1DB954",
+      });
+
+      console.log(`Added "${music.title}" to "${playlist.name}"`);
+    },
+  },
+  mounted() {
+    // Close dialog when clicking outside
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".relative")) {
+        this.showDialog = false;
+        this.selectedMusic = null;
+      }
+    });
   },
 });
 </script>
+
+<style scoped>
+/* Pagination */
+.active-page {
+  background-color: #1DB954;
+  color: white;
+}
+
+.active-page:hover {
+  background-color: #1ed760;
+}
+
+.inactive-page {
+  background-color: #282828;
+  color: #d1d5db;
+}
+
+.inactive-page:hover {
+  background-color: #3e3e3e;
+}
+</style>

@@ -6,8 +6,8 @@
   font-weight: 400;
   
   color-scheme: dark;
-  color: rgb(243, 244, 246);
-  background-color: rgb(17, 24, 39);
+  color: rgb(255, 255, 255);
+  background-color: #121212;
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,8 +28,8 @@ html, body {
 }
 
 body {
-  background-color: rgb(17, 24, 39);
-  color: rgb(243, 244, 246);
+  background-color: #121212;
+  color: rgb(255, 255, 255);
   margin: 0;
 }
 
@@ -51,7 +51,7 @@ h3 {
 
 a {
   font-weight: 500;
-  color: rgb(59, 130, 246);
+  color: #1DB954;
   text-decoration: none;
   transition-property: color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,7 +59,7 @@ a {
 }
 
 a:hover {
-  color: rgb(96, 165, 250);
+  color: #1ed760;
 }
 
 button {
@@ -69,34 +69,34 @@ button {
   font-size: 1rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: rgb(55, 65, 81);
-  color: rgb(243, 244, 246);
+  background-color: #282828;
+  color: rgb(255, 255, 255);
   cursor: pointer;
   transition: all 200ms;
 }
 
 button:hover {
-  background-color: rgb(75, 85, 99);
-  border-color: rgb(59, 130, 246);
+  background-color: #3e3e3e;
+  border-color: #1DB954;
 }
 
 button:focus,
 button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgb(59, 130, 246), 0 0 0 4px rgb(17, 24, 39);
+  box-shadow: 0 0 0 2px #1DB954, 0 0 0 4px #121212;
 }
 
 .btn-primary {
-  background-color: rgb(37, 99, 235);
+  background-color: #1DB954;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: rgb(29, 78, 216);
+  background-color: #1ed760;
 }
 
 .btn-primary:active {
-  background-color: rgb(30, 58, 138);
+  background-color: #169c46;
 }
 
 .btn-secondary {

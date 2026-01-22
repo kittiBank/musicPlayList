@@ -53,13 +53,13 @@ export default defineComponent({
 
 <style scoped>
 .navbar {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
   padding: 1rem 0;
-  border-bottom: 3px solid #0f3460;
+  border-bottom: 3px solid #1DB954;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .navbar-container {
@@ -109,14 +109,14 @@ export default defineComponent({
 }
 
 .nav-link:hover {
-  color: #64b5f6;
-  background-color: rgba(100, 181, 246, 0.1);
+  color: #1ed760;
+  background-color: rgba(29, 185, 84, 0.1);
 }
 
 .nav-link.active {
-  color: #64b5f6;
-  background-color: rgba(100, 181, 246, 0.15);
-  border-bottom: 2px solid #64b5f6;
+  color: #1DB954;
+  background-color: rgba(29, 185, 84, 0.15);
+  border-bottom: 2px solid #1DB954;
 }
 
 .nav-link::after {
@@ -126,7 +126,7 @@ export default defineComponent({
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #64b5f6;
+  background-color: #1DB954;
   transition: width 0.3s ease;
 }
 

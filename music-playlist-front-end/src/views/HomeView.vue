@@ -1,11 +1,11 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-[#0f0f1e] via-[#1a1a2e] to-[#16213e] p-4 md:p-6"
+    class="min-h-screen bg-gradient-to-br from-[#000000] via-[#121212] to-[#1a1a1a] p-4 md:p-6"
   >
     <div class="max-w-full">
       <div class="text-center mb-6">
         <h2
-          class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-[#64b5f6] to-[#81c784] bg-clip-text text-transparent"
+          class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-[#1DB954] to-[#1ed760] bg-clip-text text-transparent"
         >
           Welcome to Music Playlist
         </h2>
@@ -34,11 +34,12 @@
             <input
               type="text"
               placeholder="Search your music..."
-              class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-gray-800 text-white placeholder-gray-500 border-2 border-transparent hover:border-[#64b5f6] focus:border-[#64b5f6] focus:outline-none transition-all duration-300 text-sm"
+              class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#282828] text-white placeholder-gray-500 border-2 border-transparent hover:border-[#1DB954] focus:border-[#1DB954] focus:outline-none transition-all duration-300 text-sm"
             />
           </div>
+          <!-- search btn -->
           <button
-            class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#64b5f6] to-[#2196f3] hover:shadow-lg hover:-translate-y-0.5 text-white font-semibold transition-all duration-300 shadow-md text-sm"
+            class="search-btn px-6 py-2.5 rounded-2xl text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Search
           </button>
@@ -62,3 +63,13 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.search-btn {
+  background-color: #1DB954;
+}
+
+.search-btn:hover {
+  background-color: #1ed760;
+}
+</style>
