@@ -31,7 +31,8 @@ export class DeezerService {
         album: {
           id: track.album.id,
           title: track.album.title,
-          cover_small: track.album.cover_small
+          cover_small: track.album.cover_small,
+          cover_medium: track.album.cover_medium
         },
         duration: track.duration,
         preview: track.preview
@@ -109,7 +110,8 @@ export class DeezerService {
         album: {
           id: track.album.id,
           title: track.album.title,
-          cover_small: track.album.cover_small
+          cover_small: track.album.cover_small,
+          cover_medium: track.album.cover_medium
         },
         duration: track.duration,
         preview: track.preview,

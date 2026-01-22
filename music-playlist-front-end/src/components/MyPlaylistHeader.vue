@@ -51,7 +51,15 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Playlist } from "../mock/playlistData";
+
+interface Playlist {
+  id: string | number;
+  name: string;
+  description: string;
+  image?: string;
+  createdAt: string;
+  songs?: number[];
+}
 
 interface Props {
   playlist: Playlist;
@@ -71,9 +79,13 @@ const formattedDuration = computed(() => {
   return `${minutes} min`;
 });
 
+const emit = defineEmits<{
+  play: [];
+}>();
+
 const handlePlay = () => {
-  // Handle play functionality
-  console.log("Playing playlist:", props.playlist.name);
+  // Emit event ให้ parent component จัดการ
+  emit('play');
 };
 </script>
 

@@ -32,13 +32,16 @@
               </svg>
             </div>
             <input
+              v-model="searchQuery"
               type="text"
               placeholder="Search your music..."
               class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#282828] text-white placeholder-gray-500 border-2 border-transparent hover:border-[#1DB954] focus:border-[#1DB954] focus:outline-none transition-all duration-300 text-sm"
+              @keyup.enter="handleSearch"
             />
           </div>
           <!-- search btn -->
           <button
+            @click="handleSearch"
             class="search-btn px-6 py-2.5 rounded-2xl text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Search
@@ -48,12 +51,20 @@
     </div>
 
     <!-- Music List Section -->
-    <MusicList />
+    <MusicList :search-query="searchQuery" :trigger-search="searchTrigger" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import MusicList from "../components/MusicList.vue";
+
+const searchQuery = ref("");
+const searchTrigger = ref(0);
+
+const handleSearch = () => {
+  searchTrigger.value++;
+};
 </script>
 
 <style scoped>

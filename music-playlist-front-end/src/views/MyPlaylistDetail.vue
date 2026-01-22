@@ -9,32 +9,71 @@
         :playlist="currentPlaylist"
         :totalSongs="totalSongs"
         :totalDuration="totalDuration"
+        @play="handlePlayRandom"
       />
 
       <!-- Playlist Details Table -->
-      <MyPlaylistDetailsTable />
+      <MyPlaylistDetailsTable 
+        ref="playlistTableRef"
+        :playlistId="playlistId" 
+        @songsLoaded="handleSongsLoaded" 
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import MyPlaylistHeader from "../components/MyPlaylistHeader.vue";
 import MyPlaylistDetailsTable from "../components/MyPlaylistDetailsTable.vue";
-import { playlists } from "../mock/playlistData";
+import { getPlaylistById, type Playlist } from "../services/playlistService";
+import type { DeezerTrack } from "../services/deezerService";
 
 const route = useRoute();
 
-const playlistId = computed(() => Number(route.params.id));
+const playlistId = computed(() => route.params.id as string);
+const currentPlaylist = ref<Playlist | null>(null);
+const loadedSongs = ref<DeezerTrack[]>([]);
+const playlistTableRef = ref<InstanceType<typeof MyPlaylistDetailsTable> | null>(null);
 
-const currentPlaylist = computed(() => {
-  return playlists.find((p) => p.id === playlistId.value);
+// คำนวณจำนวนเพลงและระยะเวลาจริงจากข้อมูลที่โหลดมา
+const totalSongs = computed(() => loadedSongs.value.length);
+const totalDuration = computed(() => {
+  return loadedSongs.value.reduce((total, song) => total + (song.duration || 0), 0);
 });
 
-// Mock data for demonstration
-const totalSongs = computed(() => 15);
-const totalDuration = computed(() => 3720);
+/**
+ * โหลดข้อมูล playlist
+ */
+const loadPlaylist = async () => {
+  try {
+    const playlist = await getPlaylistById(playlistId.value);
+    currentPlaylist.value = playlist;
+  } catch (err) {
+    console.error("Error loading playlist:", err);
+  }
+};
+
+/**
+ * รับข้อมูลเพลงที่โหลดมาจาก MyPlaylistDetailsTable
+ */
+const handleSongsLoaded = (songs: DeezerTrack[]) => {
+  loadedSongs.value = songs;
+};
+
+/**
+ * เล่นเพลงแบบสุ่มเมื่อกดปุ่ม play
+ */
+const handlePlayRandom = () => {
+  if (playlistTableRef.value) {
+    playlistTableRef.value.playRandomSong();
+  }
+};
+
+onMounted(() => {
+  loadPlaylist();
+});
 </script>
 
 <style scoped>
