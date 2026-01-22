@@ -1,3 +1,6 @@
+<img width="1171" height="383" alt="Screenshot 2569-01-23 at 02 01 35" src="https://github.com/user-attachments/assets/ac35edcb-5be5-400b-a179-1d08a5f5978a" />
+
+
 # Music Playlist WebApp
 
 A fully functional music playlist application built with **Vue 3** and **Tailwind CSS** (front-end) and **NestJS** (back-end).  
@@ -79,13 +82,6 @@ Back-end
 4. **Open the app in your browser:**
 
    `http://localhost:5173/`
-
-
-
-<img width="800" height="500" alt="Screenshot 2569-01-23 at 01 23 09" src="https://github.com/user-attachments/assets/aa1c0141-b112-465c-8ea4-6f8432ed43a0" />
-
-
-<img width="800" height="500" alt="Screenshot 2569-01-23 at 01 24 38" src="https://github.com/user-attachments/assets/5cdd36de-890c-4bf8-8195-15ffb1c4b977" />
 
 
 
