@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-[#0f0f1e] via-[#1a1a2e] to-[#16213e] p-6 md:p-12"
+    class="min-h-screen bg-gradient-to-br from-[#000000] via-[#121212] to-[#1a1a1a] p-6 md:p-12"
   >
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
@@ -11,7 +11,7 @@
           My Playlist
         </h2>
         <button
-          class="bg-gradient-to-r from-[#64b5f6] to-[#2196f3] hover:shadow-lg hover:-translate-y-0.5 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 shadow-md w-full md:w-auto"
+          class="bg-[#1DB954] hover:bg-[#1ed760] hover:shadow-lg hover:-translate-y-0.5 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 shadow-md w-full md:w-auto"
         >
           + Add Playlist
         </button>
@@ -33,14 +33,14 @@
         <div
           v-for="playlist in playlists"
           :key="playlist.id"
-          class="bg-[rgba(15,52,96,0.5)] border border-[rgba(100,181,246,0.2)] rounded-lg p-6 text-center text-gray-100 hover:bg-[rgba(15,52,96,0.8)] hover:border-[rgba(100,181,246,0.5)] hover:-translate-y-2 hover:shadow-lg transition-all duration-300 cursor-pointer shadow-md"
+          class="bg-[#181818] border border-[rgba(29,185,84,0.2)] rounded-lg p-6 text-center text-gray-100 hover:bg-[#282828] hover:border-[rgba(29,185,84,0.5)] hover:-translate-y-2 hover:shadow-lg transition-all duration-300 cursor-pointer shadow-md"
         >
           <div
-            class="w-full aspect-square bg-gradient-to-br from-[#0f3460] to-[#533483] rounded-lg flex items-center justify-center text-5xl mb-4"
+            class="w-full aspect-square bg-gradient-to-br from-[#1DB954] to-[#169c46] rounded-lg flex items-center justify-center text-5xl mb-4"
           >
             {{ playlist.icon }}
           </div>
-          <h4 class="text-lg font-semibold text-[#64b5f6] mb-1">
+          <h4 class="text-lg font-semibold text-[#1DB954] mb-1">
             {{ playlist.name }}
           </h4>
           <p class="text-gray-500 text-sm">{{ playlist.songs }} songs</p>
