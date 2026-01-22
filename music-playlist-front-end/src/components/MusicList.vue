@@ -175,96 +175,93 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
 //Mock data
-import { musics, type Music } from "../mock/musicData";
-import { playlists, type Playlist } from "../mock/playlistData";
+import { musics as musicData, type Music } from "../mock/musicData";
+import { playlists as playlistData, type Playlist } from "../mock/playlistData";
 
-export default defineComponent({
-  name: "MusicList",
-  data() {
-    return {
-      currentPage: 1,
-      itemsPerPage: 5,
-      musics: musics,
-      playlists: playlists,
-      showDialog: false,
-      selectedMusic: null as Music | null,
-      dialogStyle: {} as any,
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+const musics = ref(musicData);
+const playlists = ref(playlistData);
+const showDialog = ref(false);
+const selectedMusic = ref<Music | null>(null);
+const dialogStyle = ref<any>({});
+
+const totalPages = computed(() => {
+  return Math.ceil(musics.value.length / itemsPerPage.value);
+});
+
+const paginatedMusics = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return musics.value.slice(start, end);
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const playMusic = (music: Music) => {
+  console.log("Playing:", music.title);
+  // Add your play logic here
+};
+
+const togglePlaylistDialog = (music: Music) => {
+  if (showDialog.value && selectedMusic.value?.id === music.id) {
+    showDialog.value = false;
+    selectedMusic.value = null;
+  } else {
+    selectedMusic.value = music;
+    showDialog.value = true;
+
+    // Position the dialog to the left of the button
+    dialogStyle.value = {
+      right: "100%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px",
     };
-  },
-  computed: {
-    totalPages(): number {
-      return Math.ceil(this.musics.length / this.itemsPerPage);
-    },
-    paginatedMusics(): Music[] {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.musics.slice(start, end);
-    },
-  },
-  methods: {
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    playMusic(music: Music) {
-      console.log("Playing:", music.title);
-      // Add your play logic here
-    },
-    togglePlaylistDialog(music: Music) {
-      if (this.showDialog && this.selectedMusic?.id === music.id) {
-        this.showDialog = false;
-        this.selectedMusic = null;
-      } else {
-        this.selectedMusic = music;
-        this.showDialog = true;
+  }
+};
 
-        // Position the dialog to the left of the button
-        this.dialogStyle = {
-          right: "100%",
-          top: "50%",
-          transform: "translateY(-50%)",
-          marginRight: "8px",
-        };
-      }
-    },
-    addMusicToPlaylist(music: Music, playlist: Playlist) {
-      this.showDialog = false;
-      this.selectedMusic = null;
+const addMusicToPlaylist = (music: Music, playlist: Playlist) => {
+  showDialog.value = false;
+  selectedMusic.value = null;
 
-      Swal.fire({
-        title: "Success!",
-        html: `<strong>${music.title}</strong> by ${music.artist}<br>added to <strong>${playlist.name}</strong>`,
-        icon: "success",
-        timer: 2000,
-        showConfirmButton: false,
-        background: "#282828",
-        color: "#fff",
-        iconColor: "#1DB954",
-      });
+  Swal.fire({
+    title: "Success!",
+    html: `<strong>${music.title}</strong> by ${music.artist}<br>added to <strong>${playlist.name}</strong>`,
+    icon: "success",
+    timer: 2000,
+    showConfirmButton: false,
+    background: "#282828",
+    color: "#fff",
+    iconColor: "#1DB954",
+  });
 
-      console.log(`Added "${music.title}" to "${playlist.name}"`);
-    },
-  },
-  mounted() {
-    // Close dialog when clicking outside
-    document.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest(".relative")) {
-        this.showDialog = false;
-        this.selectedMusic = null;
-      }
-    });
-  },
+  console.log(`Added "${music.title}" to "${playlist.name}"`);
+};
+
+onMounted(() => {
+  // Close dialog when clicking outside
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest(".relative")) {
+      showDialog.value = false;
+      selectedMusic.value = null;
+    }
+  });
 });
 </script>
 

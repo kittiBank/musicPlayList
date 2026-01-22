@@ -31,24 +31,14 @@
   </nav>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import { useRoute } from 'vue-router'
 
-export default defineComponent({
-  name: 'Navbar',
-  setup() {
-    const route = useRoute()
+const route = useRoute()
 
-    const isActive = (path: string) => {
-      return route.path === path
-    }
-
-    return {
-      isActive
-    }
-  }
-})
+const isActive = (path: string) => {
+  return route.path === path
+}
 </script>
 
 <style scoped>
