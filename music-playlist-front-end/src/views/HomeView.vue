@@ -52,16 +52,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import MusicList from "../components/MusicList.vue";
-
-export default defineComponent({
-  name: "HomeView",
-  components: {
-    MusicList,
-  },
-});
 </script>
 
 <style scoped>
